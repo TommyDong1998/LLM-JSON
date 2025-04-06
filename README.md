@@ -12,11 +12,32 @@ llm-json is a lightweight Node.js tool that helps you get structured data from L
 
 ## Installation
 
+```
+npm install llm-json
+```
+
+or
+
+```
 git+https://github.com/TommyDong1998/LLM-JSON/
+```
 
 ## Usage (bedrock but can be any LLM)
 
 ```
+import LLMJSON from "llm-json";
+import {
+  BedrockRuntimeClient,
+  ConversationRole,
+  ConverseCommand,
+} from "@aws-sdk/client-bedrock-runtime";
+
+async function sendToLLM(
+  prompt
+) {
+  //Make calls to your llm
+}
+
 const format = {
   type: "object",
   properties: {
@@ -24,25 +45,58 @@ const format = {
     age: { type: "integer" },
     hobbies: {
       type: "array",
-      items: { type: "string" }
-    }
+      items: { type: "string" },
+    },
   },
-  required: ["name", "age", "hobbies"]
+  required: ["name", "age", "hobbies"],
 }; // You ask your LLM to output in this format ;D
 
-const llm = new LLMJSON(prompt, format);
+const llm = new LLMJSON(
+  "Pretend you are an user. What are your age and hobbies",
+  format
+);
 
 let output = "";
-
+let parsed;
 for (let i = 0; i < 5; i++) {
   const promptText = llm.getPrompt();
-  output = await sendToBedrock(promptText);
-
-  const parsed = llm.parseFuzzyJSON(output);
+  console.log(promptText);
+  output = await sendToLLM(promptText);
+  parsed = llm.parseFuzzyJSON(output);
   if (llm.validate(parsed)) {
+    console.log("Valid JSON output on attempt", i + 1);
+    console.log(parsed);
     break;
   }
-
-  llm.updatePrompt(output);
+  llm.updatePrompt(parsed);
 }
+
 ```
+
+### Example: Flow process
+
+1. What are your age and hobbies - > To llm (example, nova-lite)
+2. llm responds:
+
+````{
+  name: 'AI System',
+  age: null,
+  hobbies: [
+    'Assisting users',
+    'Learning new information',
+    'Providing helpful responses'
+  ]
+}```
+3. llm-json parses the response and finds that age is null. Updates prompt to fix that.
+4.  llm responds:
+```json
+{
+  "name": "AI System",
+  "age": null,
+  "hobbies": [
+    "Assisting users",
+    "Learning new information",
+    "Providing helpful responses"
+  ]
+}
+````

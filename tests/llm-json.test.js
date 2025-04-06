@@ -23,12 +23,17 @@ describe("LLMJSON", () => {
 
     llm.updatePrompt(llm.parseFuzzyJSON(output));
     const updatedPrompt = llm.getPrompt();
-
     expect(updatedPrompt).toMatch(/\/age: must be integer/);
   });
 
   test("markdown-wrapped JSON still validates", () => {
     const output = '```json\n{"name": "Alice", "age": 30}\n```';
+    expect(llm.validate(output)).toBe(true);
+  });
+
+  test("JSON with pre text still validates", () => {
+    const output =
+      'Here is the json: ```json\n{"name": "Alice", "age": 30}\n```';
     expect(llm.validate(output)).toBe(true);
   });
 });

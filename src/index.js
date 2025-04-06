@@ -19,12 +19,16 @@ class LLMJSON {
    * @returns {string}
    */
   getPrompt() {
+    let attempts = "";
+    let i = 0;
+    for (const { output, errors } of this.history) {
+      attempts += `Attempt ${i++} \n\nOutput: ${output}\nErrors: ${errors}\n`;
+    }
     return [
       this.basePrompt,
+      "Only reply in JSON format.",
       "Schema:\n" + JSON.stringify(this.jsonSchema, null, 2),
-      this.errorMessage
-        ? "Your last response had this error :\n" + this.errorMessage
-        : null,
+      attempts + " . Please fix the errors above and try again.",
     ]
       .filter(Boolean)
       .join("\n\n");
@@ -79,20 +83,15 @@ class LLMJSON {
    */
   updatePrompt(lastOutput) {
     if (this.validateFn(lastOutput)) {
-      this.errorMessage = "";
       return;
     }
-    this.errorMessage = this.validateFn.errors
+    let errorMessage = this.validateFn.errors
       ?.map((e) => `• ${e.instancePath || "/"}: ${e.message}`)
       .join("\n");
-
-    if (this.errorMessage.indexOf("/: must be object") != -1) {
-      try {
-        JSON.parse(lastOutput);
-      } catch (err) {
-        this.errorMessage = `Invalid JSON output: ${err.message}`;
-      }
-    }
+    this.history.push({
+      output: lastOutput,
+      errors: errorMessage,
+    });
   }
 }
 
