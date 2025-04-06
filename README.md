@@ -21,24 +21,6 @@ or
 ```
 git+https://github.com/TommyDong1998/LLM-JSON/
 ```
-## Doc
-### getPrompt
-Returns the full prompt for you to send to your llm
-
-### getPrompt
-Returns the full prompt
-
-### validate(jsonObject)  
-Validates raw JSON string using JSON Schema. If you pass in a string it will attempt to convert to object before validating
-Returns true or false
-
-### parseFuzzyJSON(jsonString)
-Converts a JSON string to a JavaScript object, fixing common minor issues.
-returns the JSON object or if it fails (the original string)
-
-### updatePrompt(jsonString)
-It will verify json and updates the prompt to fix it if there are issues.
-No return. Your next getPrompt() call will be updated to try to fix any issues.
 
 ## Usage
 
@@ -86,7 +68,26 @@ for (let i = 0; i < 5; i++) {
 
 ```
 
-### Example: Flow process
+## Doc
+### getPrompt
+Returns the full prompt for you to send to your llm
+
+### getPrompt
+Returns the full prompt
+
+### validate(jsonObject)  
+Validates raw JSON string using JSON Schema. If you pass in a string it will attempt to convert to object before validating
+Returns true or false
+
+### parseFuzzyJSON(jsonString)
+Converts a JSON string to a JavaScript object, fixing common minor issues.
+returns the JSON object or if it fails (the original string)
+
+### updatePrompt(jsonString)
+It will verify json and updates the prompt to fix it if there are issues.
+No return. Your next getPrompt() call will be updated to try to fix any issues.
+
+## Example: Flow process
 
 1. What are your age and hobbies - > To llm (example, nova-lite)
 2. llm responds:
