@@ -22,7 +22,9 @@ class LLMJSON {
     return [
       this.basePrompt,
       "Schema:\n" + JSON.stringify(this.jsonSchema, null, 2),
-      this.errorMessage ? "Error:\n" + this.errorMessage : null,
+      this.errorMessage
+        ? "Your last response had this error :\n" + this.errorMessage
+        : null,
     ]
       .filter(Boolean)
       .join("\n\n");
@@ -30,7 +32,7 @@ class LLMJSON {
 
   /**
    * Validates raw JSON string using JSON Schema
-   * @param {string||jsonObject} rawOutput
+   * @param {jsonObject} rawOutput
    * @returns {boolean}
    */
   validate(rawOutput) {
@@ -45,9 +47,7 @@ class LLMJSON {
   }
 
   /**
-   * Converts a JSON string to a JavaScript object, stripping Markdown fences
-   * returning the cleaned if parsing fails.
-   * returning the original string if cleaning fails.
+   * Converts a JSON string to a JavaScript object, fixing minor issues.
    * @param {string} jsonString
    * @returns string or json
    * */
@@ -55,8 +55,13 @@ class LLMJSON {
     if (typeof jsonString !== "string") return jsonString;
     let cleaned = jsonString;
     try {
+      // Skip to first { or [
+      const firstBracket = jsonString.search(/[{[]/);
+      if (firstBracket > -1) {
+        cleaned = jsonString.slice(firstBracket);
+      }
       // Strip Markdown fences (```json ... ```) or plain ```
-      cleaned = jsonString
+      cleaned = cleaned
         .trim()
         .replace(/^```(?:json)?/i, "")
         .replace(/```$/, "")
@@ -69,7 +74,7 @@ class LLMJSON {
 
   /**
    * Updates the prompt with the last output and validation errors
-   * @param {string} lastOutput
+   * @param {string||jsonObject} lastOutput
    * @returns {void}
    */
   updatePrompt(lastOutput) {
@@ -80,6 +85,14 @@ class LLMJSON {
     this.errorMessage = this.validateFn.errors
       ?.map((e) => `• ${e.instancePath || "/"}: ${e.message}`)
       .join("\n");
+
+    if (this.errorMessage.indexOf("/: must be object") != -1) {
+      try {
+        JSON.parse(lastOutput);
+      } catch (err) {
+        this.errorMessage = `Invalid JSON output: ${err.message}`;
+      }
+    }
   }
 }
 
