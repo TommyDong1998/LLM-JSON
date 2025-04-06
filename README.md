@@ -22,15 +22,10 @@ or
 git+https://github.com/TommyDong1998/LLM-JSON/
 ```
 
-## Usage (bedrock but can be any LLM)
+## Usage
 
 ```
 import LLMJSON from "llm-json";
-import {
-  BedrockRuntimeClient,
-  ConversationRole,
-  ConverseCommand,
-} from "@aws-sdk/client-bedrock-runtime";
 
 async function sendToLLM(
   prompt
