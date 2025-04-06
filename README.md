@@ -73,7 +73,8 @@ for (let i = 0; i < 5; i++) {
 1. What are your age and hobbies - > To llm (example, nova-lite)
 2. llm responds:
 
-````{
+```
+{
   name: 'AI System',
   age: null,
   hobbies: [
@@ -81,9 +82,12 @@ for (let i = 0; i < 5; i++) {
     'Learning new information',
     'Providing helpful responses'
   ]
-}```
+}
+```
+
 3. llm-json parses the response and finds that age is null. Updates prompt to fix that.
-4.  llm responds:
+4. llm responds:
+
 ```json
 {
   "name": "AI System",
@@ -94,4 +98,4 @@ for (let i = 0; i < 5; i++) {
     "Providing helpful responses"
   ]
 }
-````
+```
