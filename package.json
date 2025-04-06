@@ -20,6 +20,10 @@
     "bedrock"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TommyDong1998/LLM-JSON.git"
+  },
   "dependencies": {
     "ajv": "^8.17.1"
   },
