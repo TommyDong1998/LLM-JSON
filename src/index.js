@@ -23,7 +23,7 @@ class LLMJSON {
    * @returns {Promise<object>} - The generated JSON object
    *  */
 
-  async getJson(prompt, jsonSchema, sendToLLM, maxAttempts = 5) {
+  static async getJson(prompt, jsonSchema, sendToLLM, maxAttempts = 5) {
     const llm = new LLMJSON(prompt, jsonSchema);
     let parsed = "";
     let output = "";
