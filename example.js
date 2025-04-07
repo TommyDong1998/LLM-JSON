@@ -50,8 +50,6 @@ const format = {
   required: ["name", "age", "hobbies"],
 }; // You ask your LLM to output in this format ;D
 
-const llm = new LLMJSON("What are your age and hobbies", format);
-
 console.log(
-  await llm.getJson("What are your age and hobbies", format, sendToLLM)
+  await LLMJSON.getJson("What are your age and hobbies", format, sendToLLM)
 );

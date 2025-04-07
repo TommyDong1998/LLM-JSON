@@ -46,18 +46,13 @@ const format = {
   required: ["name", "age", "hobbies"],
 }; // You ask your LLM to output in this format ;D
 
-const llm = new LLMJSON(
-  "Pretend you are an user. What are your age and hobbies",
-  format
-);
-
-let jsonOutput = await llm.getJson("What are your age and hobbies", format, sendToLLM)
+let jsonOutput = await LLMJSON.getJson("What are your age and hobbies", format, sendToLLM)
 console.log(jsonOutput)
 ```
 
 ## Doc
 
-### async getJson(prompt, jsonSchema, sendToLLM, maxAttempts = 5)
+### STATIC async getJson(prompt, jsonSchema, async sendToLLM func, maxAttempts = 5)
 
 This is the helper function. Pass in the prompt, schema and llm function to return.
 It will return the parsed JSON object or if it fails the best output (last one)
