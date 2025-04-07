@@ -51,39 +51,39 @@ const llm = new LLMJSON(
   format
 );
 
-let output = "";
-let parsed;
-for (let i = 0; i < 5; i++) {
-  const promptText = llm.getPrompt();
-  console.log(promptText);
-  output = await sendToLLM(promptText);
-  parsed = llm.parseFuzzyJSON(output);
-  if (llm.validate(parsed)) {
-    console.log("Valid JSON output on attempt", i + 1);
-    console.log(parsed);
-    break;
-  }
-  llm.updatePrompt(parsed);
-}
-
+let jsonOutput = await llm.getJson("What are your age and hobbies", format, sendToLLM)
+console.log(jsonOutput)
 ```
 
 ## Doc
+
+### async getJson(prompt, jsonSchema, sendToLLM, maxAttempts = 5)
+
+This is the helper function. Pass in the prompt, schema and llm function to return.
+It will return the parsed JSON object or if it fails the best output (last one)
+Examples:
+returns {output: json here,attempts: number of attempts, success: will be true if json is valid}
+
 ### getPrompt
+
 Returns the full prompt for you to send to your llm
 
 ### getPrompt
+
 Returns the full prompt
 
-### validate(jsonObject)  
+### validate(jsonObject)
+
 Validates raw JSON string using JSON Schema. If you pass in a string it will attempt to convert to object before validating
 Returns true or false
 
 ### parseFuzzyJSON(jsonString)
+
 Converts a JSON string to a JavaScript object, fixing common minor issues.
 returns the JSON object or if it fails (the original string)
 
 ### updatePrompt(jsonString)
+
 It will verify json and updates the prompt to fix it if there are issues.
 No return. Your next getPrompt() call will be updated to try to fix any issues.
 

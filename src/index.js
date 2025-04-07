@@ -15,6 +15,37 @@ class LLMJSON {
   }
 
   /**
+   * Generates a JSON object using the LLM and validates it against the schema.
+   *  * @param {string} prompt - The base LLM prompt
+   * @param {object} jsonSchema - A valid JSON Schema to validate against
+   * @param {function} sendToLLM - A function to send the prompt to the LLM
+   * @param {number} maxAttempts - The maximum number of attempts to get valid JSON
+   * @returns {Promise<object>} - The generated JSON object
+   *  */
+
+  async getJson(prompt, jsonSchema, sendToLLM, maxAttempts = 5) {
+    const llm = new LLMJSON(prompt, jsonSchema);
+    let parsed = "";
+    let output = "";
+    let attempts = 0;
+    for (let i = 0; i < maxAttempts; i++) {
+      const promptText = llm.getPrompt();
+      output = await sendToLLM(promptText);
+      attempts++;
+      parsed = llm.parseFuzzyJSON(output);
+      if (llm.validate(parsed)) {
+        break;
+      }
+      llm.updatePrompt(parsed);
+    }
+    return {
+      output: parsed,
+      attempts: attempts,
+      success: attempts <= maxAttempts,
+    };
+  }
+
+  /**
    * Returns the full prompt, including feedback history
    * @returns {string}
    */

@@ -52,17 +52,6 @@ const format = {
 
 const llm = new LLMJSON("What are your age and hobbies", format);
 
-let output = "";
-let parsed;
-for (let i = 0; i < 5; i++) {
-  const promptText = llm.getPrompt();
-  console.log(promptText);
-  output = await sendToLLM(promptText);
-  parsed = llm.parseFuzzyJSON(output);
-  if (llm.validate(parsed)) {
-    console.log("Valid JSON output on attempt", i + 1);
-    console.log(parsed);
-    break;
-  }
-  llm.updatePrompt(parsed);
-}
+console.log(
+  await llm.getJson("What are your age and hobbies", format, sendToLLM)
+);
